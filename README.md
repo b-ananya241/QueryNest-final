@@ -13,7 +13,7 @@ A full-stack community Q&A platform built with React.js, Material-UI, and Fireba
 
 - **Frontend**: React.js with Material-UI
 - **Backend**: Firebase (Authentication + Realtime Database)
-- **Hosting**: Firebase Hosting (optional)
+- **Hosting**: Firebase Hosting 
 
 ## Setup Instructions
 
@@ -112,14 +112,3 @@ const firebaseConfig = {
    firebase deploy
    ```
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
