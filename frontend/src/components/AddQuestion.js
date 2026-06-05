@@ -31,10 +31,7 @@ const AddQuestion = ({ onAddQuestion }) => {
     if (title.trim() && description.trim()) {
       onAddQuestion({
         title: title.trim(),
-        description: description.trim(),
-        author: 'Anonymous', // In a real app, this would come from auth
-        answers: [],
-        createdAt: new Date()
+        description: description.trim()
       });
       handleClose();
     }

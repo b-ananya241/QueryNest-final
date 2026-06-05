@@ -5,8 +5,12 @@ A full-stack community Q&A platform built with React.js, Material-UI, and Fireba
 ## Features
 
 - **Authentication**: User registration and login with email/password
-- **Questions**: Post questions with title and description
-- **Real-time Updates**: Questions are stored in Firebase Realtime Database and displayed in real-time
+- **Questions**: Post questions with title and description; author can delete their own questions
+- **Answers**: Reply to any question with threaded answers displayed below each question
+- **Upvotes**: Upvote questions in real-time; one vote per user with toggle on/off functionality
+- **Search/Filter**: Client-side search bar to filter questions by title in real-time as you type
+- **User Display Names**: Show question and answer authors with their names/emails and timestamps
+- **Real-time Updates**: All data synced live with Firebase Realtime Database
 - **Responsive Design**: Built with Material-UI for a modern, responsive interface
 
 ## Tech Stack
@@ -59,12 +63,18 @@ A full-stack community Q&A platform built with React.js, Material-UI, and Fireba
 frontend/
 ├── src/
 │   ├── components/
-│   │   ├── QuestionList.js    # Displays list of questions
-│   │   └── AddQuestion.js     # Form to add new questions
+│   │   ├── QuestionList.js    # Displays questions with upvotes, delete, and answers
+│   │   ├── AddQuestion.js     # Form to add new questions
+│   │   ├── AnswerList.js      # Displays threaded answers with real-time sync
+│   │   └── AddAnswer.js       # Form to add answers to questions
 │   ├── firebase.js            # Firebase configuration
-│   ├── App.js                 # Main application component
+│   ├── App.js                 # Main app with auth, search, and question management
 │   └── index.js               # Application entry point
 └── package.json
+
+database.rules.json            # Firebase Realtime Database security rules
+firebase.json                  # Firebase hosting configuration
+.firebaserc                     # Firebase project configuration
 ```
 
 ## Firebase Configuration
@@ -82,6 +92,35 @@ const firebaseConfig = {
   appId: "your-app-id"
 };
 ```
+
+## Database Schema
+
+The Realtime Database is structured as follows:
+
+```
+questions/
+├── {questionId}
+│   ├── title: string
+│   ├── description: string
+│   ├── author: string
+│   ├── authorId: string (uid of the creator)
+│   ├── createdAt: timestamp
+│   ├── upvotes/
+│   │   └── {userId}: true (one vote per user)
+│   └── answers/
+│       └── {answerId}
+│           ├── content: string
+│           ├── author: string
+│           ├── authorId: string
+│           └── createdAt: timestamp
+```
+
+## Security & Permissions
+
+- **Questions**: Authors can create and delete only their own questions
+- **Upvotes**: Each user can vote once per question; votes can be toggled on/off
+- **Answers**: Users can add answers; only answer authors can delete their own answers
+- **Database Rules**: Enforced via `database.rules.json` for secure access control
 
 ## Deployment
 

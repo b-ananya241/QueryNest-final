@@ -13,8 +13,10 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  DialogActions
+  DialogActions,
+  InputAdornment
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { ref, push, set, onValue } from 'firebase/database';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './firebase';
@@ -39,6 +41,7 @@ function App() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     // Listen for authentication state changes
@@ -78,14 +81,21 @@ function App() {
       const newQuestionRef = push(questionsRef);
       await set(newQuestionRef, {
         ...questionData,
-        author: user?.email || 'Anonymous',
-        createdAt: new Date().toISOString()
+        author: user?.displayName || user?.email || 'Anonymous',
+        authorId: user?.uid || null,
+        createdAt: new Date().toISOString(),
+        upvotes: {},
+        answers: {}
       });
     } catch (error) {
       console.error('Error adding question:', error);
       alert('Error adding question: ' + error.message);
     }
   };
+
+  const filteredQuestions = questions.filter(q =>
+    q.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleAuth = async () => {
     try {
@@ -142,7 +152,23 @@ function App() {
       </AppBar>
 
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <QuestionList questions={questions} />
+        <TextField
+          fullWidth
+          placeholder="Search questions..."
+          variant="outlined"
+          size="small"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ mb: 3 }}
+        />
+        <QuestionList questions={filteredQuestions} currentUser={user} />
         {user && <AddQuestion onAddQuestion={handleAddQuestion} />}
       </Container>
 

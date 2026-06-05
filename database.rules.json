@@ -1,6 +1,49 @@
 {
   "rules": {
-    ".read": "true",
-    ".write": "true"
+    "questions": {
+      "$questionId": {
+        ".read": true,
+        ".write": "root.child('questions').child($questionId).exists() === false || root.child('questions').child($questionId).child('authorId').val() === auth.uid",
+        "title": {
+          ".validate": "newData.isString()"
+        },
+        "description": {
+          ".validate": "newData.isString()"
+        },
+        "author": {
+          ".validate": "newData.isString()"
+        },
+        "authorId": {
+          ".validate": "newData.val() === auth.uid"
+        },
+        "createdAt": {
+          ".validate": "newData.isString()"
+        },
+        "upvotes": {
+          "$userId": {
+            ".read": true,
+            ".write": "$userId === auth.uid"
+          }
+        },
+        "answers": {
+          "$answerId": {
+            ".read": true,
+            ".write": "!data.exists() || data.child('authorId').val() === auth.uid",
+            "content": {
+              ".validate": "newData.isString()"
+            },
+            "author": {
+              ".validate": "newData.isString()"
+            },
+            "authorId": {
+              ".validate": "newData.val() === auth.uid"
+            },
+            "createdAt": {
+              ".validate": "newData.isString()"
+            }
+          }
+        }
+      }
+    }
   }
 }
